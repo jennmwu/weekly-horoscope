@@ -9,7 +9,7 @@ import { CosmicBackground } from "@/components/cosmic-background"
 
 type Screen = "sign" | "intent" | "uncover" | "result"
 type Sign = "sagittarius" | "scorpio" | null
-type Intent = string | null
+type Intent = "shaping" | "air" | "asking" | null
 
 export default function HoroscopePage() {
   const [screen, setScreen] = useState<Screen>("sign")
@@ -17,6 +17,9 @@ export default function HoroscopePage() {
   const [selectedIntent, setSelectedIntent] = useState<Intent>(null)
   const [curiosityNote, setCuriosityNote] = useState<string>("")
   const [isRevealing, setIsRevealing] = useState(false)
+
+  const [weeklyText, setWeeklyText] = useState<string | null>(null)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   const handleSignSelect = (sign: Sign) => {
     setSelectedSign(sign)
@@ -28,13 +31,36 @@ export default function HoroscopePage() {
     setScreen("uncover")
   }
 
-  const handleUncover = () => {
+  const handleUncover = async () => {
+    if (!selectedSign || !selectedIntent) return
+
+    setApiError(null)
+    setWeeklyText(null)
     setIsRevealing(true)
-    // Delay showing result to allow reveal animation
-    setTimeout(() => {
+
+    try {
+      const res = await fetch("/api/weekly-reading", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sign: selectedSign, // "scorpio" | "sagittarius"
+          question: selectedIntent, // "shaping" | "air" | "asking"
+          context: curiosityNote || "",
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error || "Failed to fetch reading")
+
+      setWeeklyText(data.text)
       setScreen("result")
-      setIsRevealing(false)
-    }, 1800)
+    } catch (e: any) {
+      setApiError(e?.message || "Something went wrong")
+      setScreen("result")
+    } finally {
+      // Let the reveal animation breathe a bit
+      setTimeout(() => setIsRevealing(false), 900)
+    }
   }
 
   const handleReset = () => {
@@ -42,43 +68,46 @@ export default function HoroscopePage() {
     setSelectedSign(null)
     setSelectedIntent(null)
     setCuriosityNote("")
+    setWeeklyText(null)
+    setApiError(null)
+    setIsRevealing(false)
   }
 
   return (
     <main className="cosmic-bg grain min-h-dvh flex items-center justify-center p-6 relative overflow-hidden">
       {/* Cosmic background with stars */}
       <CosmicBackground />
-      
+
       {/* Nebula mist overlay during reveal */}
       {isRevealing && (
         <div className="nebula-sweep fixed inset-0 z-30 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/20 to-transparent blur-3xl" />
         </div>
       )}
-      
+
       {/* Content */}
       <div className="relative z-10 w-full max-w-md">
-        {screen === "sign" && (
-          <SignSelection onSelect={handleSignSelect} />
-        )}
-        
+        {screen === "sign" && <SignSelection onSelect={handleSignSelect} />}
+
         {screen === "intent" && (
-          <IntentSelection 
+          <IntentSelection
             onSelect={handleIntentSelect}
             curiosityNote={curiosityNote}
             onCuriosityChange={setCuriosityNote}
           />
         )}
-        
+
         {screen === "uncover" && (
           <UncoverButton onUncover={handleUncover} isRevealing={isRevealing} />
         )}
-        
+
         {screen === "result" && (
-          <HoroscopeCard 
-            sign={selectedSign} 
+          <HoroscopeCard
+            sign={selectedSign}
             intent={selectedIntent}
             curiosityNote={curiosityNote}
+            weeklyText={weeklyText}
+            apiError={apiError}
             onReset={handleReset}
           />
         )}
