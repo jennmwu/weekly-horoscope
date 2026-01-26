@@ -52,7 +52,7 @@ Requirements:
 `;
 
     const response = await openai.responses.create({
-      model: "gpt-5.2-mini",
+      model: "gpt-4.1-mini",
       input: prompt,
     });
 
