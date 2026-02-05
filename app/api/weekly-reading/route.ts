@@ -55,7 +55,7 @@ Structure & guidance:
 - Let the entire reading revolve around that theme without naming it explicitly.
 - Avoid covering multiple themes or moods.
 - Do not use astrology jargon, clichés, or absolutes.
-- Avoid em dashes (—) or overly stylized punctuation.
+- Avoid em dashes or overly stylized punctuation.
 
 Content:
 - Speak to inner experience, decision-making, and subtle shifts.
@@ -64,15 +64,16 @@ Content:
 - Bullets are allowed when helpful, but not required.
 
 Length:
-- Approximately 180–240 words..;
+- Approximately 180-240 words.
+`;
 
-    const response = await openai.responses.create({
+    const response = await openai.chat.completions.create({
       model: "gpt-4.1-mini",
-      input: prompt,
+      messages: [{ role: "user", content: prompt }],
     });
 
     return new Response(
-      JSON.stringify({ text: response.output_text }),
+      JSON.stringify({ text: response.choices[0].message.content }),
       { headers: { "Content-Type": "application/json" } }
     );
   } catch (err: any) {
