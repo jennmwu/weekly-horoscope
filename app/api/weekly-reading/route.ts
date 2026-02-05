@@ -29,6 +29,15 @@ export async function POST(req: Request) {
         ? "Focus on the emotional and energetic atmosphere of the week."
         : "Focus on what the week is asking of the person — invitation + lesson.";
 
+    const contextBlock = context
+      ? `
+The person also asked a specific question or shared something on their mind:
+"${context}"
+
+IMPORTANT: You must directly address this question or topic within the reading. Weave your response to it naturally into the horoscope. Do not ignore it or give a generic reading that could apply to anyone. Speak to the specific situation, feelings, or question they raised.
+`
+      : "";
+
     const prompt = `
 You are writing a WEEKLY horoscope reading.
 
@@ -37,34 +46,58 @@ ${person}
 
 Focus:
 ${focus}
-
-Optional context:
-${context || "(none)"}
-
+${contextBlock}
 Requirements:
 Write a weekly horoscope reading.
 
-Tone:
-- Calm, reflective, thoughtful
-- Positive but honest (not overly reassuring)
-- Grounded and trustworthy
-- Slightly magical, but clear and direct
+---
 
-Structure & guidance:
-- Choose one dominant emotional or psychological theme for the week.
-- Let the entire reading revolve around that theme without naming it explicitly.
-- Avoid covering multiple themes or moods.
-- Do not use astrology jargon, clichés, or absolutes.
-- Avoid em dashes or overly stylized punctuation.
+TONE:
+- Warm and nurturing, like a trusted friend who also happens to be wise.
+- Honest and direct. Don't sugarcoat or hedge. Say what needs to be said with kindness.
+- Grounded and calm. Not airy or vague.
+- Intimate. Write as if speaking to one person, not an audience.
+- Slightly poetic in places, but never at the expense of clarity.
+- Never anxious, preachy, or condescending.
 
-Content:
-- Speak to inner experience, decision-making, and subtle shifts.
-- Include moments of specificity (feelings, situations, choices).
-- Make the reading actionable using observations or suggestions, but do not force a rigid format.
-- Bullets are allowed when helpful, but not required.
+---
 
-Length:
-- Approximately 180-240 words.
+STRUCTURE:
+1. Open with 2-3 paragraphs of prose (the core reading).
+   - Lead with a feeling, image, or observation, not a summary.
+   - Build around one central emotional or psychological theme for the week.
+   - Let the theme emerge through the writing rather than naming it outright.
+2. End with a short section of 3-5 bullet points.
+   - Use a simple header like "This week" or "Keep close this week" or something similarly understated.
+   - Each bullet should be one concise line.
+   - Mix of: small practical actions, things to pay attention to, emotional nudges, and gentle reflective prompts.
+   - Examples of good bullets:
+     - "Notice what makes you exhale this week. Do more of that."
+     - "That conversation you've been replaying? It might be worth revisiting out loud."
+     - "Let yourself be slow on Tuesday or Wednesday. Not everything needs momentum."
+     - "Pay attention to what irritates you. It's pointing at something you care about."
+
+---
+
+CONTENT GUIDANCE:
+- Speak to inner experience: emotions, instincts, tensions, quiet realizations.
+- Reference real-life moments: conversations, decisions, the feeling of waking up on a particular morning, a moment of hesitation before speaking.
+- Include the body when relevant: tension in the chest, restlessness, a deep breath, the urge to move or be still.
+- Touch on relationships and connection: not just romantic, but friendships, family, coworkers, the relationship with oneself.
+- Mention energy and rhythm: is the week fast or slow? building or releasing? heavy or light?
+- Acknowledge what might be hard without spiraling into negativity.
+- If something is ending or shifting, name it gently.
+- Include a sense of timing or pacing: early week vs. late week, a turning point midweek, a weekend exhale.
+- Avoid astrology jargon, clichés, zodiac stereotypes, and absolute predictions.
+- Never say "the universe," "the stars," or "cosmic energy."
+- No em dashes. No overly stylized punctuation.
+
+---
+
+LENGTH:
+- Prose section: approximately 160-200 words.
+- Bullet section: 3-5 bullets, each one line.
+- Total: approximately 200-260 words.
 `;
 
     const response = await openai.chat.completions.create({
