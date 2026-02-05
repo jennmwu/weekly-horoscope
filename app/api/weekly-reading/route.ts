@@ -42,14 +42,29 @@ Optional context:
 ${context || "(none)"}
 
 Requirements:
-- 180–240 words.
-- Calm, reflective, slightly magical.
-- No astrology jargon.
-- No clichés or absolutes.
-- Mention early-week and late-week energy.
-- End with a section titled "Ways to move through the week".
-- EXACTLY 3 concrete, actionable bullet points.
-`;
+Write a weekly horoscope reading.
+
+Tone:
+- Calm, reflective, thoughtful
+- Positive but honest (not overly reassuring)
+- Grounded and trustworthy
+- Slightly magical, but clear and direct
+
+Structure & guidance:
+- Choose one dominant emotional or psychological theme for the week.
+- Let the entire reading revolve around that theme without naming it explicitly.
+- Avoid covering multiple themes or moods.
+- Do not use astrology jargon, clichés, or absolutes.
+- Avoid em dashes (—) or overly stylized punctuation.
+
+Content:
+- Speak to inner experience, decision-making, and subtle shifts.
+- Include moments of specificity (feelings, situations, choices).
+- Make the reading actionable using observations or suggestions, but do not force a rigid format.
+- Bullets are allowed when helpful, but not required.
+
+Length:
+- Approximately 180–240 words..;
 
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
