@@ -11,10 +11,12 @@ const cormorant = Cormorant_Garamond({
   variable: "--font-serif"
 });
 
-export const metadata: Metadata = {
-  title: 'Daily Horoscope',
-  description: 'A quiet ritual for two',
-    generator: 'v0.app'
+export const metadata = {
+  title: "Our Horoscope",
+  manifest: "/manifest.json",
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 }
 
 export const viewport: Viewport = {
