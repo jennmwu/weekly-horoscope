@@ -11,17 +11,11 @@ interface HoroscopeCardProps {
   onReset: () => void
 }
 
-const fallbackHoroscopes = {
-  sagittarius: {
-    reading:
-      "The morning light carries a quiet invitation today. Something you've been holding loosely is ready to be held a little closer, or released entirely. Trust the feeling that arrives without explanation. Your intuition is speaking in its softest voice — lean in to hear it.",
-    suggestions: ["Send that message you've been composing in your head", "Take the longer route home"],
-  },
-  scorpio: {
-    reading:
-      "There's a gentle undercurrent moving beneath the surface of today. What feels like stillness is actually preparation. The universe is rearranging something on your behalf, even if you can't see it yet. Let yourself be carried by the rhythm you can't quite name.",
-    suggestions: ["Write down the thought that keeps returning", "Leave space for an unexpected conversation"],
-  },
+const fallbackReadings = {
+  sagittarius:
+    "The morning light carries a quiet invitation this week. Something you've been holding loosely is ready to be held a little closer, or released entirely. Trust the feeling that arrives without explanation. Your intuition is speaking in its softest voice. Lean in to hear it.\n\nThis week\n- Notice what makes you exhale. Do more of that.\n- Send that message you've been composing in your head.\n- Take the longer route home at least once.",
+  scorpio:
+    "There's a gentle undercurrent moving beneath the surface of this week. What feels like stillness is actually preparation. Something is rearranging on your behalf, even if you can't see it yet. Let yourself be carried by the rhythm you can't quite name.\n\nThis week\n- Write down the thought that keeps returning.\n- Leave space for an unexpected conversation.\n- Pay attention to what irritates you. It's pointing at something you care about.",
 }
 
 const containerVariants = {
@@ -60,22 +54,20 @@ export function HoroscopeCard({
   apiError,
   onReset,
 }: HoroscopeCardProps) {
-  const fallback = sign ? fallbackHoroscopes[sign] : fallbackHoroscopes.sagittarius
   const signName = sign === "sagittarius" ? "Sagittarius" : "Scorpio"
   const signSymbol = sign === "sagittarius" ? "\u2650" : "\u264F"
 
   const intentLabel =
     intent === "shaping"
-      ? "What’s shaping my week"
+      ? "What's shaping my week"
       : intent === "air"
-      ? "What’s in the air this week"
+      ? "What's in the air this week"
       : intent === "asking"
-      ? "What’s this week asking of me"
+      ? "What's this week asking of me"
       : null
 
   const displayedText =
-    weeklyText ??
-    `${fallback.reading}\n\nWays to move through the week:\n- ${fallback.suggestions[0]}\n- ${fallback.suggestions[1]}`
+    weeklyText ?? fallbackReadings[sign ?? "sagittarius"]
 
   return (
     <motion.div variants={containerVariants} initial="hidden" animate="visible">
@@ -90,7 +82,7 @@ export function HoroscopeCard({
             {signName}
           </h2>
           <p className="font-sans text-muted-foreground/60 text-xs uppercase tracking-widest mt-1">
-            This Week’s Reading
+            This Week's Reading
           </p>
 
           {intentLabel && (
@@ -102,7 +94,7 @@ export function HoroscopeCard({
           {curiosityNote && curiosityNote.trim().length > 0 && (
             <p className="mt-3 font-sans text-muted-foreground/70 text-xs leading-relaxed">
               <span className="uppercase tracking-widest text-[10px] text-muted-foreground/60">
-                What’s on your mind:
+                What's on your mind:
               </span>{" "}
               {curiosityNote.trim()}
             </p>
@@ -129,42 +121,12 @@ export function HoroscopeCard({
 
         {/* Weekly reading */}
         {!apiError && (
-          <>
-            <motion.div
-              className="font-serif text-foreground/90 text-base leading-relaxed tracking-wide whitespace-pre-wrap"
-              variants={itemVariants}
-            >
-              {displayedText}
-            </motion.div>
-
-            {/* Divider with star */}
-            <motion.div className="flex items-center justify-center my-8" variants={itemVariants}>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/50 to-transparent" />
-              <span className="mx-4 text-accent/60 text-sm">&#10022;</span>
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-border/50 to-transparent" />
-            </motion.div>
-
-            {/* If the model didn’t include the “Ways…” section for some reason, show fallback actions */}
-            {!displayedText.toLowerCase().includes("ways to move through the week") && (
-              <motion.div variants={itemVariants}>
-                <p className="font-sans text-muted-foreground text-xs uppercase tracking-widest mb-4">
-                  Ways to move through the week
-                </p>
-                <ul className="space-y-3">
-                  {fallback.suggestions.map((suggestion, index) => (
-                    <motion.li
-                      key={index}
-                      className="flex items-start gap-3 text-foreground/80 font-sans text-sm leading-relaxed"
-                      variants={itemVariants}
-                    >
-                      <span className="text-accent/50 text-xs mt-1.5">&#10038;</span>
-                      {suggestion}
-                    </motion.li>
-                  ))}
-                </ul>
-              </motion.div>
-            )}
-          </>
+          <motion.div
+            className="font-serif text-foreground/90 text-base leading-relaxed tracking-wide whitespace-pre-wrap"
+            variants={itemVariants}
+          >
+            {displayedText}
+          </motion.div>
         )}
       </motion.div>
 
